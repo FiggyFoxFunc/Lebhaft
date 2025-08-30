@@ -1,6 +1,6 @@
 Terminal based music player and organiser.
 
-Language: [[Rust]].
+Language: Rust.
 Libraries: 
 - TUI: [ratatui](https://docs.rs/ratatui/latest/ratatui/index.html), and [crossterm](https://docs.rs/crossterm/latest/crossterm/)
 - Audio playback: [rodio](https://docs.rs/rodio/latest/rodio/)
