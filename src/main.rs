@@ -1,11 +1,12 @@
 mod app;
+mod ui;
 use app::App;
 
-fn main() -> () {
+fn main() {
     let mut terminal = ratatui::init();
-    let result = App::default().run(&mut terminal);
+    let mut app = App::new();
+    app.run(&mut terminal);
     ratatui::restore();
-    result
 }
 
 

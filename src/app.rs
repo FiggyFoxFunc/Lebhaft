@@ -1,17 +1,27 @@
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyEventState, KeyModifiers};
-use ratatui::{
-    DefaultTerminal, Frame, buffer::Buffer, layout::Rect, 
-    style::Stylize, symbols::border, text::Line, 
-    widgets::{Block, Paragraph, Widget}
-};
+use ratatui::{DefaultTerminal, Frame};
 
-#[derive(Debug, Default)]
+use crate::ui::MainMenuWidget;
+
+#[derive(Debug)]
+pub enum Screen {
+    Main,
+}
+
+#[derive(Debug)]
 pub struct App {
-    exit: bool
-
+    exit: bool,
+    current_screen: Screen
 }
 
 impl App {
+    pub fn new() -> Self {
+        Self {
+            exit: false,
+            current_screen: Screen::Main
+        }
+    }
+
     pub fn run(&mut self, terminal: &mut DefaultTerminal) {
         while !self.exit {
 
@@ -21,7 +31,7 @@ impl App {
     }
 
     pub fn draw(&self, frame: &mut Frame) {
-        frame.render_widget(AppWidget, frame.area());
+        frame.render_widget(MainMenuWidget, frame.area());
     }
 
     pub fn handle_events(&mut self) {
@@ -39,16 +49,3 @@ impl App {
     }
 }
 
-struct AppWidget;
-
-impl Widget for AppWidget {
-    fn render(self, area: Rect, buf: &mut Buffer) {
-        let title = Line::from("Welcome to Lebhaft!").centered().magenta();
-        let title_bottom = Line::from("Your personal music player and organiser").centered().magenta();
-        let block = Block::bordered()
-            .title(title)
-            .title_bottom(title_bottom)
-            .border_set(border::THICK);
-        let _ = Paragraph::new("Still a work in progress...").centered().block(block).render(area, buf);
-    }   
-}
