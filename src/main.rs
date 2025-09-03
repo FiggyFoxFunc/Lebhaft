@@ -1,12 +1,15 @@
 mod app;
 mod ui;
+use std::io::Result;
+
 use app::App;
 
-fn main() {
+fn main() -> Result<()> {
     let mut terminal = ratatui::init();
     let mut app = App::new();
-    app.run(&mut terminal);
+    let result = app.run(&mut terminal);
     ratatui::restore();
+    result
 }
 
 

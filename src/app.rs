@@ -1,4 +1,6 @@
-use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyEventState, KeyModifiers};
+use std::io::Result;
+
+use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{DefaultTerminal, Frame, style::Stylize, symbols::border, text::Line, widgets::Block};
 
 use crate::ui::MainMenuWidget;
@@ -22,12 +24,15 @@ impl App {
         }
     }
 
-    pub fn run(&mut self, terminal: &mut DefaultTerminal) {
+    pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
         while !self.exit {
 
             terminal.draw(|frame | self.draw(frame)).expect("Unable to draw frame.");
-            self.handle_events();
+            if let Some(key) = crossterm::event::read()?.as_key_press_event() {
+                self.handle_events(key);
+            }
         }
+        Ok(())
     }
 
     pub fn draw(&self, frame: &mut Frame) {
@@ -41,17 +46,10 @@ impl App {
         frame.render_widget(block, frame.area());
     }
 
-    pub fn handle_events(&mut self) {
-        if matches!(
-            event::read().expect("Failed to read event"), 
-            Event::Key(KeyEvent {
-                code: KeyCode::Enter,
-                modifiers: KeyModifiers::NONE,
-                kind: KeyEventKind::Press,
-                state: KeyEventState::NONE
-            })
-        ) {
-            self.exit = true;
+    pub fn handle_events(&mut self, key: KeyEvent) {
+        match key.code {
+            KeyCode::Esc => self.exit = true,
+            _ => ()
         }
     }
 }
