@@ -1,26 +1,33 @@
 use std::io::Result;
 
 use crossterm::event::{KeyCode, KeyEvent};
-use ratatui::{DefaultTerminal, Frame, layout::{Constraint, Layout}, style::Stylize, text::Line};
+use ratatui::{
+    DefaultTerminal, 
+    Frame, 
+    layout::{Constraint, Layout}, 
+    style::Stylize, 
+    text::Line, 
+    widgets::{ListState}
+};
 
-use crate::ui::MainMenuWidget;
+use crate::ui::{MainMenu};
 
-#[derive(Debug)]
 pub enum Screen {
-    Main,
+    Main
 }
 
-#[derive(Debug)]
 pub struct App {
-    exit: bool,
-    current_screen: Screen
+    pub exit: bool,
+    current_screen: Screen,
+    main_menu: MainMenu<'static>
 }
 
 impl App {
     pub fn new() -> Self {
         Self {
             exit: false,
-            current_screen: Screen::Main
+            current_screen: Screen::Main,
+            main_menu: MainMenu::new()
         }
     }
 
@@ -35,7 +42,7 @@ impl App {
         Ok(())
     }
 
-    pub fn draw(&self, frame: &mut Frame) {
+    pub fn draw(&mut self, frame: &mut Frame) {
         let layout = Layout::default()
             .constraints([Constraint::Length(1), Constraint::Min(3), Constraint::Length(1)])
             .split(frame.area());
@@ -44,14 +51,19 @@ impl App {
         let title_bottom = Line::from("Your personal music player and organiser").centered().magenta();
 
         frame.render_widget(title, layout[0]);
+        frame.render_stateful_widget(&mut self.main_menu, layout[1], &mut ListState::default());
         frame.render_widget(title_bottom, layout[2]);
 
     }
 
     pub fn handle_events(&mut self, key: KeyEvent) {
-        match key.code {
-            KeyCode::Esc => self.exit = true,
-            _ => ()
+        if key.code == KeyCode::Esc {
+            self.exit = true; 
+            return;
+        }
+
+        match self.current_screen {
+            Screen::Main => self.main_menu.handle_events(key),
         }
     }
 }

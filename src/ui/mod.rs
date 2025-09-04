@@ -1,2 +1,2 @@
 pub mod main_menu;
-pub use main_menu::MainMenuWidget;
+pub use main_menu::MainMenu;
