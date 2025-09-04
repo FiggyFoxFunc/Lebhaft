@@ -10,16 +10,18 @@ use ratatui::{
     widgets::{ListState}
 };
 
-use crate::ui::{MainMenu};
+use crate::ui::{MainMenu, Player};
 
 pub enum Screen {
-    Main
+    Main,
+    Player
 }
 
 pub struct App {
     pub exit: bool,
     current_screen: Screen,
-    main_menu: MainMenu<'static>
+    main_menu: MainMenu<'static>,
+    player: Player
 }
 
 impl App {
@@ -27,7 +29,8 @@ impl App {
         Self {
             exit: false,
             current_screen: Screen::Main,
-            main_menu: MainMenu::new()
+            main_menu: MainMenu::new(),
+            player: Player::new()
         }
     }
 
@@ -51,7 +54,10 @@ impl App {
         let title_bottom = Line::from("Your personal music player and organiser").centered().magenta();
 
         frame.render_widget(title, layout[0]);
-        frame.render_stateful_widget(&mut self.main_menu, layout[1], &mut ListState::default());
+        match self.current_screen {
+            Screen::Main => frame.render_stateful_widget(&mut self.main_menu, layout[1], &mut ListState::default()),
+            Screen::Player => frame.render_widget(&mut self.player, layout[1]),
+        }
         frame.render_widget(title_bottom, layout[2]);
 
     }
@@ -64,12 +70,21 @@ impl App {
 
         match self.current_screen {
             Screen::Main => {
-                let (exit, _state) = self.main_menu.handle_events(key);
+                let (exit, state) = self.main_menu.handle_events(key);
                 if exit == true {
                     self.exit = exit;
                     return;
                 }
+
+                match state {
+                    Some(Screen::Player) => {
+                        self.current_screen = Screen::Player
+                    },
+                    _ => ()
+                }
+
             },
+            Screen::Player => ()
         }
     }
 }

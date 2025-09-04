@@ -39,7 +39,7 @@ impl MainMenu<'static> {
             },
             KeyCode::Enter => {
                 match self.state.selected() {
-                    Some(0) => (false, None),
+                    Some(0) => (false, Some(Screen::Player)),
                     Some(1) => (false, None),
                     Some(2) => (true, None),
                     _ => (false, None)
