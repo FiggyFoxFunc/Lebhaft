@@ -63,7 +63,13 @@ impl App {
         }
 
         match self.current_screen {
-            Screen::Main => self.main_menu.handle_events(key),
+            Screen::Main => {
+                let (exit, _state) = self.main_menu.handle_events(key);
+                if exit == true {
+                    self.exit = exit;
+                    return;
+                }
+            },
         }
     }
 }

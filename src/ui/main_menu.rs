@@ -7,6 +7,8 @@ use ratatui::{
     widgets::{Block, HighlightSpacing, List, ListItem, ListState, StatefulWidget}
 };
 
+use crate::app::Screen; 
+
 pub struct MainMenu<'a> {
     items: Vec<ListItem<'a>>,
     state: ListState
@@ -25,12 +27,25 @@ impl MainMenu<'static> {
     }
 
     // TODO: Handle the selection of an option.
-    pub fn handle_events(&mut self, key: KeyEvent) {
+    pub fn handle_events(&mut self, key: KeyEvent) -> (bool, Option<Screen>){
         match key.code {
-            KeyCode::Up => self.state.select_previous(),
-            KeyCode::Down => self.state.select_next(),
-            KeyCode::Enter => todo!(),
-            _ => ()
+            KeyCode::Up => {
+                self.state.select_previous();
+                (false, None)
+            },
+            KeyCode::Down => {
+                self.state.select_next();
+                (false, None)
+            },
+            KeyCode::Enter => {
+                match self.state.selected() {
+                    Some(0) => (false, None),
+                    Some(1) => (false, None),
+                    Some(2) => (true, None),
+                    _ => (false, None)
+                }
+            },
+            _ => (false, None)
         }
     }
 }
