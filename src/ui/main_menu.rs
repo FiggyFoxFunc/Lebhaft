@@ -1,13 +1,12 @@
 use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{
     layout::{Constraint, Flex, Layout}, 
-    style::{Style, Stylize}, 
-    symbols::border::THICK, 
+    style::{Style, Stylize},
     text::Line, 
-    widgets::{Block, HighlightSpacing, List, ListItem, ListState, StatefulWidget}
+    widgets::{HighlightSpacing, List, ListItem, ListState, StatefulWidget}
 };
 
-use crate::app::Screen; 
+use crate::{app::Screen, ui::util}; 
 
 pub struct MainMenu<'a> {
     items: Vec<ListItem<'a>>,
@@ -55,10 +54,10 @@ impl StatefulWidget for &mut MainMenu<'static> {
 
     fn render(self, area: ratatui::prelude::Rect, buf: &mut ratatui::prelude::Buffer, _state: &mut Self::State) {
         // Improve look of the widget.
-        let block = Block::bordered()
-            .border_set(THICK)
-            .title(Line::from("Main Menu").magenta())
-            .title_bottom(Line::from("Up: Move Up, Down: Move down, Enter: to select").centered().magenta());
+        let block = util::build_block(
+            String::from("Main Menu"), 
+            String::from("Up: Move Up, Down: Move down, Enter: to select")
+        );
 
         let [layout] = Layout::vertical([Constraint::Length(area.height/2)]).flex(Flex::Center).areas(area);
 

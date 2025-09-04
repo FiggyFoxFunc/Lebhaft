@@ -1,4 +1,6 @@
-use ratatui::{style::Stylize, symbols::border::THICK, text::Line, widgets::{Block, Paragraph, Widget}};
+use ratatui::{text::Line, widgets::{Paragraph, Widget}};
+
+use crate::ui::util;
 
 pub struct Player {
 
@@ -12,11 +14,7 @@ impl Player {
 
 impl Widget for &mut Player  {
     fn render(self, area: ratatui::prelude::Rect, buf: &mut ratatui::prelude::Buffer) {
-        let block = Block::bordered()
-            .border_set(THICK)
-            .title(Line::from("Player").magenta())
-            .title_bottom(Line::from("Intructions").centered().magenta());
-
+        let block = util::build_block(String::from("Player"), String::from("Instructions"));
         Paragraph::new(Line::from("To be done.")).block(block).centered().render(area, buf);
     }
 }
